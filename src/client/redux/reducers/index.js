@@ -1,0 +1,3 @@
+s
+export default {
+}
