@@ -5,12 +5,13 @@
   "scripts": {
     "start": "npm run clientStart && npm run serverStart",
     "serverStart": "node index.js",
-    "serverStart:dev": "nodemon --harmony index.js",
+    "serverStart:dev": "nodemon --harmony build/src/server/index.js & tsc --watch",
     "clientStart": "NODE_ENV='development' webpack-dev-server --watch --hot --inline",
     "build": "NODE_ENV='production' webpack",
     "apidoc": "apidoc -i src/server/routes -o doc/",
     "test": "node scripts/client/test.js --env=jsdom",
-    "flow": "flow"
+    "flow": "flow",
+    "tsc": "tsc"
   },
   "dependencies": {
     "ajv": "^5.5.2",
@@ -63,6 +64,7 @@
     "style-loader": "0.18.2",
     "styled-components": "^2.2.3",
     "sw-precache-webpack-plugin": "0.11.4",
+    "typescript": "^3.4.1",
     "url-loader": "0.5.9",
     "webpack": "3.5.1",
     "webpack-dev-server": "2.8.2",
@@ -111,6 +113,12 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "@types/koa": "^2.0.48",
+    "@types/koa-bodyparser": "^4.2.2",
+    "@types/koa-passport": "^4.0.2",
+    "@types/koa-router": "^7.0.40",
+    "@types/koa-static": "^4.0.1",
+    "@types/node": "^11.12.2",
     "css-entry-webpack-plugin": "^1.0.0-beta.4",
     "css-hot-loader": "^1.3.0",
     "css-loader": "0.14.5",

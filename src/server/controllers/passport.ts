@@ -1,4 +1,4 @@
-const passport = require('koa-passport');
+const koaPassport = require('koa-passport');
 const { Strategy: LocalStrategy } = require('passport-local');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
@@ -11,19 +11,19 @@ const jwtOptions = {
   secretOrKey: secret,
 };
 
-passport.use(new Strategy(jwtOptions, (jwtPayload, done) => {
+koaPassport.use(new Strategy(jwtOptions, (jwtPayload:any, done:any) => {
   if (jwtPayload) return done(false, jwtPayload);
   return done();
 }));
 
-passport.use(new LocalStrategy(
+koaPassport.use(new LocalStrategy(
   {
     usernameField: 'username',
     passwordField: 'password',
     session: false,
   },
-  ((username, password, done) => {
-    User.findOne({ username }, (err, user) => {
+  ((username:any, password:any, done:any) => {
+    User.findOne({ username }, (err:any, user:any) => {
       if (err) {
         return done(err);
       }
@@ -36,19 +36,20 @@ passport.use(new LocalStrategy(
   }),
 ));
 
-function generateJWT(username) {
+function generateJWT(username:any) {
   const today = new Date();
   const exp = new Date(today);
+  const time:number = exp.getTime();
   exp.setDate(today.getDate() + 60);
 
   return jwt.sign({
     username,
-    exp: parseInt(exp.getTime() / 1000, 10),
+    exp: time / 1000,
   }, secret);
 }
 
-async function checkAuth(ctx, next) {
-  await passport.authenticate('jwt', { session: false }, (error, decryptToken, jwtError) => {
+async function checkAuth(ctx:any, next:any) {
+  await koaPassport.authenticate('jwt', { session: false }, (error:any, decryptToken:any, jwtError:any) => {
     if (error) ctx.throw(error, 500);
     if (jwtError) ctx.throw(jwtError, 500);
     ctx.user = decryptToken;
@@ -56,9 +57,9 @@ async function checkAuth(ctx, next) {
   })(ctx, next);
 }
 
-const localAuthHandler = (ctx, next) => passport.authenticate(
+const localAuthHandler = (ctx:any, next:any) => koaPassport.authenticate(
   'local',
-  async (err, user, info) => {
+  async (err:any, user:any, info:any) => {
     let token;
     if (user === false) {
       ctx.throw(info.message, 401);
@@ -75,7 +76,7 @@ const localAuthHandler = (ctx, next) => passport.authenticate(
 )(ctx, next);
 
 
-const registrationController = async (body) => {
+const registrationController = async (body:any) => {
   const { username, password } = body;
   const user = await User.findOne({ username });
   let token;
@@ -100,4 +101,4 @@ const registrationController = async (body) => {
   return { token };
 };
 
-module.exports = { localAuthHandler, registrationController, checkAuth };
+export { localAuthHandler, registrationController, checkAuth };
