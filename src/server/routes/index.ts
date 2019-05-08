@@ -1,11 +1,10 @@
-import Router from 'koa-router';
-import auth from './auth';
-import render from './render';
+import Router from 'koa-router'
+import auth from './auth'
+import render from './render'
 
-const router: Router = new Router();
+const router: Router = new Router()
 
-router.use('', auth.routes());
-router.use('', render.routes());
+router.use('', auth.routes())
+router.use('', render.routes())
 
-module.exports = router;
-
+export default router

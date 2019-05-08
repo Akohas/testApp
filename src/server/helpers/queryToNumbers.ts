@@ -1,19 +1,12 @@
-interface Query {
-    [key: string]: string;
+import { Query, QueryToNumber } from '../interfaces/helpers'
+
+function queryToNumbers (query: Query): QueryToNumber {
+  const result: QueryToNumber = {}
+  Object.keys(query).forEach((item) => {
+    result[item] = parseInt(query[item], 10)
+  })
+
+  return result
 }
 
-interface QueryToNumber {
-  [key: string]: number;
-}
-
-
-function queryToNumbers(object: Query):QueryToNumber{
-  const obj: QueryToNumber = {};
-  Object.keys(obj).forEach((item) => {
-    obj[item] = parseInt(object[item], 10);
-  });
-
-  return obj;
-}
-
-module.exports = queryToNumbers;
+module.exports = queryToNumbers

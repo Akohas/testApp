@@ -1,11 +1,11 @@
-import Router from 'koa-router';
+import Router from 'koa-router'
 
-const router: Router = new Router();
+const router: Router = new Router()
 
 export default router
-  .get('/', async (ctx:any) => {
-    await ctx.render('index', 'index');
+  .get('/', async (ctx: Router.RouterContext) => {
+    await ctx.render('index', 'index')
   })
-  .get('/doc', async (ctx:any) => {
-    await ctx.render('doc');
-  });
+  .get('/doc', async (ctx: Router.RouterContext) => {
+    await ctx.render('doc')
+  })

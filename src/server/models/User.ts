@@ -1,43 +1,43 @@
-const mongoose = require('mongoose');
-const crypto = require('crypto');
+import mongoose from 'mongoose'
+import crypto from 'crypto'
 
 const {
-  Schema,
-} = mongoose;
+  Schema
+} = mongoose
 
 const UserSchema = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
   hashedPassword: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
   salt: {
     type: String,
-    required: true,
-  },
-});
+    required: true
+  }
+})
 
-UserSchema.methods.encryptPassword = function (password:string) {
-  return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
-};
+UserSchema.methods.encryptPassword = function (password: string) {
+  return crypto.createHmac('sha1', this.salt).update(password).digest('hex')
+}
 
 UserSchema.virtual('password')
-  .set(function(this:any, password:string) {
-    this.plainPassowrd = password;
-    this.salt = Math.random().toString();
-    this.hashedPassword = this.encryptPassword(password);
+  .set(function (this: any, password: string) {
+    this.plainPassowrd = password
+    this.salt = Math.random().toString()
+    this.hashedPassword = this.encryptPassword(password)
   })
-  .get(function(this:any) { 
-    return this.plainPassword;
-  });
+  .get(function (this: any) {
+    return this.plainPassword
+  })
 
-UserSchema.methods.checkPassword = function (password:string) {
-  return this.encryptPassword(password) === this.hashedPassword;
-};
+UserSchema.methods.checkPassword = function (password: string) {
+  return this.encryptPassword(password) === this.hashedPassword
+}
 
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema)

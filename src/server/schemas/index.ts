@@ -1,4 +1,5 @@
+import { Schemas } from '../interfaces/schemas'
 
-module.exports = {
+const schemas: Schemas = {}
 
-};
+export default schemas
