@@ -5,9 +5,9 @@ const router: Router = new Router()
 
 export default router
   .post('/registration', async (ctx: Router.RouterContext) => {
-    const { token, error, status } = await registrationController(ctx.request.body)
+    const { token, error, status = 201 } = await registrationController(ctx.request.body)
     if (token) {
-      ctx.status = 201
+      ctx.status = status
       ctx.body = { token }
     } else {
       ctx.status = status
