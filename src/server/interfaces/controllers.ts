@@ -3,3 +3,7 @@ export interface ControllerResponse {
   error?: string,
   token?: string
 }
+
+export interface UserJWT {
+  username: 'string'
+}

@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 import config from '../../../config/server'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { IUser } from '../interfaces/schemas'
-import { ControllerResponse } from '../interfaces/controllers'
+import { ControllerResponse, UserJWT } from '../interfaces/controllers'
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -51,11 +51,12 @@ function generateJWT (username: string) {
 }
 
 async function checkAuth (ctx: Router.RouterContext, next: () => Promise<any>) {
-  await koaPassport.authenticate('jwt', { session: false }, (error: Error, decryptToken: string, jwtError: Error) => {
+  await koaPassport.authenticate('jwt', { session: false }, async (error: Error, { username }: UserJWT, jwtError: Error) => {
     if (error) ctx.throw(error, 500)
     if (jwtError) ctx.throw(jwtError, 500)
-    ctx.user = decryptToken
-    next()
+    const user = await User.findOne({ username })
+    ctx.user = user
+    await next()
   })(ctx, next)
 }
 

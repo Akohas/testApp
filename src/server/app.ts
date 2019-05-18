@@ -1,6 +1,5 @@
 import Koa from 'koa'
 import views from 'koa-views'
-import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
 import json from 'koa-json'
 import koaStatic from 'koa-static'
@@ -19,9 +18,6 @@ const app = new Koa()
 
 // debug
 debug('koa2:server')
-
-// error handler
-onerror(app)
 
 // middlewares
 app
@@ -55,11 +51,6 @@ app.use(async (ctx: Router.RouterContext, next: () => Promise<any>) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}`)
 })
 
-app.on('error', async (err: Error, ctx: Router.RouterContext) => {
-  console.log(err)
-  logger.error('server error', err, ctx)
-})
-
-module.exports = () => app.listen(port, () => {
+export default () => app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`)
 })

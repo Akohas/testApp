@@ -7,10 +7,10 @@ const ajv = new Ajv()
 function validate (schemaName: string) {
   const schema = schemas[schemaName]
 
-  return (ctx: Router.IRouterContext, next: () => Promise<any>) => {
+  return async (ctx: Router.IRouterContext, next: () => Promise<any>) => {
     const valid = ajv.validate(schema, ctx.request.body)
     if (!valid) ctx.throw(422, JSON.stringify(ajv.errors))
-    return next()
+    await next()
   }
 }
 
