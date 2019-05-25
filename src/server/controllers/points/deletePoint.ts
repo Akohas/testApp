@@ -5,10 +5,14 @@ async function deletePoint (ctx: Router.IRouterContext) {
   const { _id } = ctx.user
   const { scaleId, pointId } = ctx.request.body
 
-  return Scale.findOneAndUpdate(
-    { _id: scaleId, _creator: _id },
-    { $pull: { points:  { _id: pointId } } }
-  )
+  try {
+    const scale = await Scale.findOne({ _id: scaleId, _creator: _id, 'points._id' : pointId })
+    if (!scale) throw new Error('Such point doesn\'t exist')
+    await Scale.findOneAndUpdate({ _id: scaleId, _creator: _id }, { $pull: { points:  { _id: pointId } } })
+    return { status: 'success' }
+  } catch ({ message }) {
+    return { status: 'error', error: message }
+  }
 
 }
 
