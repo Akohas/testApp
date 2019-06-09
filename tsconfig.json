@@ -1,12 +1,19 @@
 {
   "compilerOptions": {
+    "sourceMap": true,
+    "noImplicitAny": false,
     "target": "es5",                        
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "outDir": "./build",
-    "lib": ["es2015"]
+    "lib": [
+      "es2015",
+      "es2017",
+      "dom"
+    ],
+    "jsx": "react"
   },
   "include": [
     "src/server/**/*"
