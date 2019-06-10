@@ -1,15 +1,11 @@
 import React, { FunctionComponent } from 'react'
-import Button from '@material-ui/core/Button'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Link from '@material-ui/core/Link'
-import TextField from '@material-ui/core/TextField'
-import Box from '@material-ui/core/Box'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
-import { Form, Field } from 'react-final-form'
 import { connect } from 'react-redux'
+import { Form, Field } from 'react-final-form'
+import { makeStyles } from '@material-ui/core/styles'
+import { FormControl, FormHelperText, Container, Typography, TextField, Box, Link, CssBaseline, Button } from '@material-ui/core'
 import { fetchAuth } from '../redux/actions/auth'
+import { authSucceed, authError, isAuthFetching } from '../redux/reducers/auth'
+import { ActionError } from '../interfaces'
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -30,10 +26,13 @@ const useStyles = makeStyles(theme => ({
 }))
 
 type SignInProps = {
-  fetchAuth: () => any
+  fetchAuth: () => any,
+  authSucceed: boolean,
+  authError: ActionError,
+  isAuthFetching: boolean
 }
 
-const SignIn: FunctionComponent<SignInProps> = ({ fetchAuth }) => {
+const SignIn: FunctionComponent<SignInProps> = ({ fetchAuth, authError }) => {
   const classes = useStyles()
   return (
     <Container component='main' maxWidth='xs'>
@@ -49,14 +48,15 @@ const SignIn: FunctionComponent<SignInProps> = ({ fetchAuth }) => {
                 <Field
                   name='username'
                   render={({ input, meta }) => (
-                      <TextField
-                        {...input}
-                        variant='outlined'
-                        label='username'
-                        margin='normal'
-                        fullWidth={true}
-                        type='text'
-                      />
+                    <TextField
+                      {...input}
+                      error={!!authError}
+                      variant='outlined'
+                      label='username'
+                      margin='normal'
+                      fullWidth={true}
+                      type='text'
+                    />
                   )}
                 />
                 <Field
@@ -64,6 +64,7 @@ const SignIn: FunctionComponent<SignInProps> = ({ fetchAuth }) => {
                   render={({ input, meta }) => (
                       <TextField
                         {...input}
+                        error={!!authError}
                         variant='outlined'
                         label='password'
                         margin='normal'
@@ -72,6 +73,12 @@ const SignIn: FunctionComponent<SignInProps> = ({ fetchAuth }) => {
                       />
                   )}
                 />
+
+                {authError &&
+                <FormControl error={true}>
+                  <FormHelperText>{authError.message}</FormHelperText>
+                </FormControl>
+                }
               <Button
                 type='submit'
                 fullWidth={true}
@@ -94,7 +101,9 @@ const SignIn: FunctionComponent<SignInProps> = ({ fetchAuth }) => {
 
 const mapStateToProps = (state) => {
   return {
-
+    authSucceed: authSucceed(state),
+    authError: authError(state),
+    isAuthFetching: isAuthFetching(state)
   }
 }
 

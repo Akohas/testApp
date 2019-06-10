@@ -21,6 +21,12 @@ debug('koa2:server')
 
 // middlewares
 app
+  .use(async (ctx, next) => {
+    ctx.set('Access-Control-Allow-Origin', '*')
+    ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
+    await next()
+  })
   .use(bodyparser())
   .use(json())
   .use(logger())
@@ -41,12 +47,6 @@ app
   .use(router.routes())
   .use(router.allowedMethods())
   .use(koaStatic(`${root}/apidoc`))
-  .use(async (ctx, next) => {
-    ctx.set('Access-Control-Allow-Origin', '*')
-    ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
-    await next()
-  })
   // logger
   .use(async (ctx: Router.RouterContext, next: () => Promise<any>) => {
     const start: Date = new Date()

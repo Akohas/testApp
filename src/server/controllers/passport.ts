@@ -7,6 +7,7 @@ import config from '../../../config/server'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { IUser } from '../interfaces/schemas'
 import { ControllerResponse, UserJWT } from '../interfaces/controllers'
+import { baseResponse } from '../helpers'
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -31,7 +32,7 @@ koaPassport.use(new LocalStrategy(
       }
 
       if (!user || !user.checkPassword(password)) {
-        return done(null, false, { message: 'Нет такого пользователя или пароль неверен.' })
+        return done(null, false, { message: "user doesn't exist" })
       }
       return done(null, user)
     })
@@ -65,16 +66,20 @@ const localAuthHandler = (ctx: Router.RouterContext, next: () => Promise<any>) =
   async (err: Error, user: any, info: any) => {
     let token
     if (user === false || err) {
-      ctx.throw(info.message, 401)
+      ctx.status = 200
+      ctx.body = baseResponse(info.message, null, 401)
+      return
     }
     try {
       token = await generateJWT(user.username)
     } catch (error) {
-      ctx.throw(error, 500)
+      ctx.status = 200
+      ctx.body = baseResponse(error.message, null, 500)
+      return
     }
 
     ctx.status = 200
-    ctx.body = { token }
+    ctx.body = baseResponse(null, { token })
   }
 )(ctx, next)
 

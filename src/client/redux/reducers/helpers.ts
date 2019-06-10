@@ -1,11 +1,5 @@
 
-import { ActionTypes } from '../../interfaces'
-
-type Action = {
-  type: string,
-  error?: string,
-  response?: any
-}
+import { ActionTypes, ActionError, Action } from '../../interfaces'
 
 export const successReducer = ({ REQUEST, SUCCESS, FAILURE }: ActionTypes, fn: Function = (res => res), initState: any = null, update: boolean = true) =>
   (state = initState, { type, response }: Action) => {
@@ -21,12 +15,14 @@ export const successReducer = ({ REQUEST, SUCCESS, FAILURE }: ActionTypes, fn: F
   }
 
 export const errorReducer = ({ REQUEST, SUCCESS, FAILURE }) => (state = null, { type, error }: Action) => {
+  if (!error) return state
+  const { status, message } = error
   switch (type) {
     case REQUEST:
     case SUCCESS:
       return null
     case FAILURE:
-      return error
+      return { status, message }
     default: return state
   }
 }

@@ -1,5 +1,6 @@
 import Router from 'koa-router'
 import Scale from '../../models/Scale'
+import { baseResponse } from '../../helpers'
 
 async function createPoint (ctx: Router.IRouterContext) {
   const { _id } = ctx.user
@@ -11,9 +12,9 @@ async function createPoint (ctx: Router.IRouterContext) {
     { $push: { points: { value } } },
     { upsert: true, new: true }
   )
-    return { status: 'success', result: { scale } }
+    return baseResponse(null, scale)
   } catch ({ message }) {
-    return { status: 'error', error: message }
+    return baseResponse(message, null, 500)
   }
 }
 

@@ -1,5 +1,6 @@
 import Router from 'koa-router'
 import Scale from '../../models/Scale'
+import { baseResponse } from '../../helpers'
 
 async function deletePoint (ctx: Router.IRouterContext) {
   const { _id } = ctx.user
@@ -7,11 +8,11 @@ async function deletePoint (ctx: Router.IRouterContext) {
 
   try {
     const scale = await Scale.findOne({ _id: scaleId, _creator: _id, 'points._id' : pointId })
-    if (!scale) throw new Error('Such point doesn\'t exist')
+    if (!scale) return baseResponse('Such point doesn\'t exist', null, 500)
     await Scale.findOneAndUpdate({ _id: scaleId, _creator: _id }, { $pull: { points:  { _id: pointId } } })
-    return { status: 'success' }
+    return baseResponse()
   } catch ({ message }) {
-    return { status: 'error', error: message }
+    return baseResponse(message, null, 500)
   }
 
 }
